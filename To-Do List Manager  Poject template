@@ -1,0 +1,68 @@
+def display_menu():
+    print("\nTo-Do List Manager")
+    print("1. Add task")
+    print("2. View tasks")
+    print("3. Delete task")
+    print("4. Exit")
+
+def add_task(tasks):
+    task = input("Enter a new task: ")
+    tasks.append(task)
+    print(f"Task '{task}' added.")
+
+def view_tasks(tasks):
+    if not tasks:
+        print("No tasks available.")
+    else:
+        print("\nYour To-Do List:")
+        for i, task in enumerate(tasks, start=1):
+            print(f"{i}. {task}")
+
+def delete_task(tasks):
+    view_tasks(tasks)
+    try:
+        task_num = int(input("Enter the task number to delete: "))
+        if 0 < task_num <= len(tasks):
+            removed_task = tasks.pop(task_num - 1)
+            print(f"Task '{removed_task}' deleted.")
+        else:
+            print("Invalid task number.")
+    except ValueError:
+        print("Please enter a valid number.")
+
+def save_tasks_to_file(tasks, filename="tasks.txt"):
+    with open(filename, "w") as file:
+        for task in tasks:
+            file.write(task + "\n")
+
+def load_tasks_from_file(filename="tasks.txt"):
+    tasks = []
+    try:
+        with open(filename, "r") as file:
+            tasks = file.read().splitlines()
+    except FileNotFoundError:
+        print("No existing task file found. Starting fresh.")
+    return tasks
+
+def main():
+    tasks = load_tasks_from_file()
+    while True:
+        display_menu()
+        choice = input("Choose an option: ")
+        if choice == '1':
+            add_task(tasks)
+            save_tasks_to_file(tasks)
+        elif choice == '2':
+            view_tasks(tasks)
+        elif choice == '3':
+            delete_task(tasks)
+            save_tasks_to_file(tasks)
+        elif choice == '4':
+            print("Exiting...")
+            save_tasks_to_file(tasks)
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    main()
